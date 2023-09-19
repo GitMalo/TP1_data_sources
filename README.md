@@ -1,1 +1,1 @@
-My application prints "Hello from Space! 🚀"
+My application prints "Hello World"
