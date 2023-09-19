@@ -1,0 +1,1 @@
+My application prints "Hello from Space! 🚀"
