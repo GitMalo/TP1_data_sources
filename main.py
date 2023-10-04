@@ -1,6 +1,9 @@
 from flask import Flask
+import logging
 
 app = Flask(__name__)
+
+logging.basicConfig(level=logging.DEBUG)
 
 prefix_google = """
  <!-- Google tag (gtag.js) -->
