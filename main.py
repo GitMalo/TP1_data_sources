@@ -1,5 +1,6 @@
 from flask import Flask, request
 import logging
+import requests
 
 app = Flask(__name__)
 
@@ -30,7 +31,7 @@ def logger():
         # take the text in the text box
         text_from_textbox = request.form['textbox']
 
-    # print a message in the browser console with the text from the text box
+        # print a message in the browser console with the text from the text box
         browser_log = f"""
         <script>
             console.log('Connexion à la page Logger');
@@ -54,6 +55,43 @@ def logger():
         <input type="submit" value="Soumettre">
     </form>
     """
+    # Bouton pour effectuer une requête Google
+    google_button = """
+    <form method="GET" action="/perform_google_request">
+        <input type="submit" value="Effectuer la requête Google">
+    </form>
+    """
+    # Bouton pour effectuer une requête Google Analytics
+    google_analytics_button = """
+    <form method="GET" action="/perform_google_analytics_request">
+        <input type="submit" value="Effectuer la requête Google analytics">
+    </form>
+    """
+    
+    return "logger page" + browser_log + textbox_form + google_button + google_analytics_button
 
-    return "logger page" + browser_log + textbox_form
+@app.route("/perform_google_request", methods=["GET", "POST"])
+def perform_google_request():
+    # obtient la réponse de Google
+    response = requests.get("https://www.google.com")
+    # si la réponse est 200, on obtient les cookies
+    if response.status_code == 200:
+        response_message = response.cookies.get_dict()
+    else:
+        response_message = "Request to Google failed."
+
+    return str(response_message)
+
+@app.route("/perform_google_analytics_request", methods=["GET", "POST"])
+def perform_google_analytics_request():
+    # obtient la réponse de Google Analytics
+    response = requests.get("https://analytics.google.com/analytics/web/#/p407503730/reports/intelligenthome")
+    # si la réponse est 200, on obtient les cookies
+    if response.status_code == 200:
+        response_message = response.cookies.get_dict()
+    else:
+        response_message = "Request to Google analytics failed."
+
+    return str(response_message)
+
 
