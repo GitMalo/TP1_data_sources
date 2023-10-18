@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Google Trends Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Google Trends Data</h1>
+    
+    <!-- Formulaire HTML avec une boîte de texte -->
+    <form method="POST">
+        <label for="textbox">Text Box :</label><br>
+        <input type="text" id="textbox" name="textbox"><br><br>
+        <input type="submit" value="Soumettre">
+    </form>
+
+    <!-- Bouton pour effectuer une requête Google -->
+    <form method="GET" action="/perform_google_request">
+        <input type="submit" value="Effectuer la requête Google">
+    </form>
+
+    <!-- Bouton pour effectuer une requête Google Analytics -->
+    <form method="GET" action="/perform_google_analytics_request">
+        <input type="submit" value="Effectuer la requête Google Analytics">
+    </form>
+
+    <!-- Bouton pour récupérer le nombre de visiteurs -->
+    <form method="GET" action="/fetch-google-analytics-data">
+        <input type="submit" value="Récupérer le nombre de visiteurs">
+    </form>
+
+    
+    <div style="width: 80%;">
+        <canvas id="myChart"></canvas>
+    </div>
+    <script>
+        // Get the data from your Flask route
+        fetch('/fetch-google-trend')
+            .then(response => response.json())
+            .then(data => {
+                // Extract data
+                const dates = data.dates;
+                const footballData = data.football;
+                const basketballData = data.basketball;
+
+                // Create a chart
+                const ctx = document.getElementById('myChart').getContext('2d');
+                const myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [
+                            {
+                                label: 'football',
+                                data: footballData,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1,
+                                fill: false,
+                            },
+                            {
+                                label: 'basketball',
+                                data: basketballData,
+                                borderColor: 'rgba(192, 75, 192, 1)',
+                                borderWidth: 1,
+                                fill: false,
+                            },
+                        ],
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date',
+                                },
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Interest',
+                                },
+                            },
+                        },
+                    },
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+
+</body>
+</html>
